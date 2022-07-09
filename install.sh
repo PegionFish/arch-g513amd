@@ -29,24 +29,35 @@ echo "Prepare to install GPU driver"
 cp /etc/pacman.conf /etc/pacman.conf.bak
 echo "[multilib]" >> /etc/pacman.conf
 echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
-
+yes | pacman -Syyuu
 # Install GPU Driver
 echo "Start installing GPU driver"
 if [ $GPU = "amdgpu" ]
 	then
-		yes | pacman -Syu mesa lib32-mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau
-else
-	yes | pacman -S 
+		yes | pacman -S mesa lib32-mesa xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau
+elif [ $GPU = "amdgpupro" ]
+	then
+		yes | pacman -S 
+else 
+	exit
 fi
 # Install asusctl
 echo "Installing asusctl"
-mkdir /tmp/asusctl && cd /tmp/asusctl
-git clone
+mkdir /tmp/asusctl && cd /tmp/
+yes | pacman -S hicolor-icon-theme libusb systemd power-profiles-daemon git rust acpi_call
+git clone https://gitlab.com/asus-linux/asusctl.git
+cd asusctl && make build -j16 && make install -j16
+systemctl enable asusd
 # deploy dGPU init file
 echo "Deploying dGPU"
+wget https://github.com/PegionFish/arch-g513amd/dgpu.service
+cp dgpu.service /usr/lib/systemd/system/dgpu.service
+systemctl enabl dgpu
 # clean
 echo "Installation completed. Cleaning."
+cd ..
+rm -rf asusctl
 mv /etc/pacman.conf.bak /etc/pacman.conf
-pacman -Scc
-echo "Cleaning completed. Reboot your computer now."
+yes | pacman -Scc
+read -p "Cleaning completed. Reboot your computer now."
 reboot

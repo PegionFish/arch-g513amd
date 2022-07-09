@@ -1,0 +1,10 @@
+[Unit]
+Description=ROG G513/713 dGPU enabler
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/radeontop -p 03
+KillMode=process
+User=root
+Restart=on-failure
+RestartSec=1s

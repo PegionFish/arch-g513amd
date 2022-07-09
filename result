@@ -1,0 +1,10 @@
+Arch Linux After-Installation script for ASUS ROG G513 AMD Advantage Gaming Laptop
+Version 1.0, published by PegionFish
+
+Checking your selection
+You're choosing Open Source AMDGPU driver
+Prepare to install GPU driver
+Start installing GPU driver
+Installing asusctl
+Deploying dGPU
+Installation completed. Cleaning.
